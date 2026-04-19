@@ -1,3 +1,8 @@
 .DS_Store
 build*/
 __pycache__/
+
+# Generated protobuf files — always regenerate from .proto at build time
+*.pb.cc
+*.pb.h
+*_pb2.py
