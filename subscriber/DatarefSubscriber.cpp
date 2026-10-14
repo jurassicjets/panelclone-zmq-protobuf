@@ -8,9 +8,7 @@
 #include "DatarefSubscriber.hpp"
 
 //#include "base64.hpp"
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/imgcodecs.hpp>
+// [standalone] opencv includes removed — 0 cv:: usages in this file (panel-texture video not used)
 
 DatarefSubscriber& DatarefSubscriber::getInstance() {
     static DatarefSubscriber instance;   // Guaranteed to be destroyed.
