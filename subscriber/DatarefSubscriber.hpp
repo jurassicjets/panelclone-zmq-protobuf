@@ -88,10 +88,15 @@ public:
     bool SetFloatOverrideFuncRegex(const std::regex txt_regex, float_value_overide_t override_func);
 
     void SendDatarefValueUpdates(std::vector<DrefIndexedFloatValue> updatedrefvals);
+    // Panel -> sim input (PUSH socket; call from one thread only).
+    // pubIndex is PubFloatValue::index; the publisher maps it to dataref + element.
+    void SendDrefWrite(int pubIndex, float value);
+    void SendCommand(const std::string & command, panelclone::CommandEvent::Action action);
 
 private:
 
     void SubscriberWorker();
+    void SendPushUpdate(const panelclone::PushUpdate & pushMessage);
 
 };
 

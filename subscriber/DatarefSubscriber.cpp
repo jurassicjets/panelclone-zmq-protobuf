@@ -583,3 +583,36 @@ void DatarefSubscriber::SendDatarefValueUpdates(std::vector<DrefIndexedFloatValu
         std::cout << "zmq error, " << e.what() << std::endl;
     }
 }
+void DatarefSubscriber::SendPushUpdate(const panelclone::PushUpdate & pushMessage)
+{
+    std::string data;
+    pushMessage.SerializeToString(&data);
+    zmq::message_t request(data.data(), data.size());
+    try {
+        // dontwait: a manipulator click must never stall the render loop when
+        // the sim isn't connected (PUSH blocks with no peer).
+        if (!updater.send(request, zmq::send_flags::dontwait))
+            std::cout << "[input] sim not connected, dropped push update" << std::endl;
+    } catch (zmq::error_t &e) {
+        std::cout << "zmq error, " << e.what() << std::endl;
+    }
+}
+
+void DatarefSubscriber::SendDrefWrite(int pubIndex, float value)
+{
+    panelclone::PushUpdate pushMessage;
+    auto drefwrite = pushMessage.add_updates()->mutable_drefwrite();
+    drefwrite->set_index(pubIndex);
+    drefwrite->set_floatval(value);
+    SendPushUpdate(pushMessage);
+}
+
+void DatarefSubscriber::SendCommand(const std::string & command,
+    panelclone::CommandEvent::Action action)
+{
+    panelclone::PushUpdate pushMessage;
+    auto cmd = pushMessage.add_updates()->mutable_command();
+    cmd->set_command(command);
+    cmd->set_action(action);
+    SendPushUpdate(pushMessage);
+}
